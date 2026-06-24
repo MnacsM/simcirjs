@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+<script type="text/javascript" src="simcir.js"></script>
+<link rel="stylesheet" type="text/css" href="simcir.css" />
+<script type="text/javascript" src="simcir-basicset.js"></script>
+<link rel="stylesheet" type="text/css" href="simcir-basicset.css" />
+<!-- <script type="text/javascript" src="simcir-library.js"></script> -->
+    <script type="text/javascript">
+$(function() {
+
+  var $s = simcir;
+
+  var $simcir = $('#mySimcir');
+
+  var getCircuitData = function() {
+    return $s.controller(
+        $simcir.find('.simcir-workspace') ).text();
+  };
+  var setCircuitData = function(data) {
+    $s.setupSimcir($simcir, JSON.parse(data) );
+  };
+  var getSVG = function() {
+
+    // stylesheets
+    var styles = '';
+    $('link[rel="stylesheet"]').each(function() {
+      styles += '<?xml-stylesheet type="text/css" href="' +
+          $(this).attr('href') + '" ?>';
+    });
+
+    var $ws = $simcir.find('.simcir-workspace').clone(); 
+
+    // remove simcir attributes
+    $ws.find('*').
+      removeAttr('simcir-node-type').
+      removeAttr('simcir-transform-x').
+      removeAttr('simcir-transform-y').
+      removeAttr('simcir-transform-rotate');
+
+    var svg = $('<div></div>').append($ws).html();
+    if (svg.indexOf('http://www.w3.org/2000/svg') == -1) {
+      var i = svg.indexOf('>');
+      svg = svg.substring(0, i) +
+        ' xmlns="http://www.w3.org/2000/svg"' +
+        svg.substring(i);
+    }
+
+    var svgText = '<?xml version="1.0" ?>' + styles + svg;
+
+    const downloadBtn = document.getElementById('downloadSVGBtn');
+    // 文字列をブラウザが認識できるURL形式（UTF-8）に変換して、ボタンのhrefにセット
+    downloadBtn.href = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+    // ダウンロードボタンを自動クリック
+    downloadBtn.click();
+
+    // return '<?xml version="1.0" ?>' + styles + svg;
+    return svgText;
+  };
+
+  // button click events
+  $('#getDataBtn').click(function() {
+    $('#dataArea').val(getCircuitData() );
+  });
+  $('#setDataBtn').click(function() {
+    setCircuitData($('#dataArea').val() );
+  });
+  $('#getSVGBtn').click(function() {
+    $('#dataArea').val(getSVG() );
+  });
+
+  // load default (just specifies circuit size).
+  setCircuitData('{ "width":800, "height":400 }');
+});
+    </script>
+<style type="text/css">
+* {
+  font-family: arial, sans-serif;
+}
+
+.code {
+  margin: 16px 0px 16px 0px;
+  padding: 4px;
+  border-width: 0px 0px 0px 4px;
+  border-color: #cccccc;
+  border-style: solid;
+  background-color: #f0f0f0;
+  white-space: pre;
+}
+
+.note {
+  color: #0000ff;
+}
+</style>
+<title>SimcirJS</title>
+</head>
+<body>
+
+<h1>SimcirJS</h1>
+
+<div style="margin:16px 0px 16px 0px">
+  SimcirJS(a.k.a. Simcir) is a circuit simulator in HTML5 and JavaScript.
+  <br/>
+  Let's try your circuit!
+</div>
+
+Kazuhiko Arase 様作成の <a href="https://kazuhikoarase.github.io/simcirjs/">SimcirJS</a> をベースに，使用パーツの数を調整したものです．
+
+<h2>Usage</h2>
+<ul>
+  <li>Choose a device from the toolbox and move to right side.（ツールボックス（左側）からデバイスを選び，右側のワークスペースに移動させます．）</li>
+  <li>Connect them by drag operation.（デバイス同士をドラッグ操作で接続します．）</li>
+  <li>Click an input node to disconnect.（入力ノード（端子）をクリックすると，接続を解除できます．）</li>
+  <li>Move a device back to the toolbox if you don't use.（使わないデバイスはツールボックスへドラッグして戻すことで削除できます．）</li>
+  <li>Ctrl+Click(Mac:command+Click) to toggle view (Live circuit or JSON data).（Ctrl + クリック（Macは Command + クリック）で，回路の表示モード（回路図 ⇔ JSONデータ）を切り替えることができます．）</li>
+  <li>Double-Click a label to edit device name.（ラベルをダブルクリックすると，デバイス名を編集できます．）</li>
+  <!-- <li>Double-Click a library to open the circuit inside.（自作したライブラリ（ICなど）をダブルクリックすると、その内部の回路を開くことができます。）</li> -->
+  <li><strong>v get data v ボタン:</strong> 現在配置されている回路の状態を下のテキストエリアに JSON データとして出力します．</li>
+  <li><strong>^ set data ^ ボタン:</strong> 下のテキストエリアにある JSON データを読み込んで回路図として画面上に復元します．</li>
+  <li><strong>v get SVG v ボタン:</strong> 現在の回路図を SVG コードに変換して下のテキストエリアに出力し，<u>同時に SVG ファイル（circuit.svg）としてダウンロード</u>します．</li>
+</ul>
+
+<div id="mySimcir"></div>
+
+    <div>
+      <button id="getDataBtn">v get data v</button>
+      <button id="setDataBtn">^ set data ^</button>
+      <button id="getSVGBtn">v get SVG v</button>
+      <a id="downloadSVGBtn" href="#" download="circuit.svg" style="display: none;">v download SVG v</a>
+    </div>
+    <textarea id="dataArea" style="width:600px; height:200px;"></textarea>
+
+<div class="simcir-doc"></div>
+
+<hr/>
+<div style="text-align: right;">
+Contents Copyright &copy; Kazuhiko Arase
+</div>
+
+</body>
+</html>
