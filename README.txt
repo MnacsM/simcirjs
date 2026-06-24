@@ -1,3 +1,5 @@
+↓↓↓　original ↓↓↓
+
 SimcirJS
 
 Copyright (c) 2014 Kazuhiko Arase
