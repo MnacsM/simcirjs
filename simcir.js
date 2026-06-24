@@ -2509,8 +2509,8 @@ simcir.$ = function() {
   };
 
   // register built-in devices
-  $s.registerDevice('In', createPortFactory('in') );
-  $s.registerDevice('Out', createPortFactory('out') );
-  $s.registerDevice('Joint', createJointFactory() );
+  // $s.registerDevice('In', createPortFactory('in') );
+  // $s.registerDevice('Out', createPortFactory('out') );
+  // $s.registerDevice('Joint', createJointFactory() );
 
 }(simcir);
