@@ -75,7 +75,33 @@ $(function() {
   });
 
   // load default (just specifies circuit size).
-  setCircuitData('{ "width":800, "height":400 }');
+  setCircuitData( '{"width":800,"height":400}' );
+  setCircuitData(
+    `{
+      "width":800,
+      "height":400,
+      "showToolbox":true,
+      "toolbox":[
+        {"type":"DC"},
+        {"type":"LED"},
+        {"type":"LED","color":"#00ff00","label":"LED(G)"},
+        {"type":"Toggle"},
+        {"type":"NOT"},
+        {"type":"AND"},
+        {"type":"AND","numInputs":"3","label":"AND(3in)"},
+        {"type":"NAND"},
+        {"type":"OR"},
+        {"type":"OR","numInputs":"3","label":"OR(3in)"},
+        {"type":"OR","numInputs":"4","label":"OR(4in)"},
+        {"type":"NOR"},
+        {"type":"EXOR"}
+      ],
+      "devices":[
+      ],
+      "connectors":[
+      ]
+    }`
+  );
 });
     </script>
 <style type="text/css">
