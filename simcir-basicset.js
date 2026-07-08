@@ -713,8 +713,8 @@
   });
 
   // register switches
-  // $s.registerDevice('PushOff', createSwitchFactory('PushOff') );
-  // $s.registerDevice('PushOn', createSwitchFactory('PushOn') );
+  $s.registerDevice('PushOff', createSwitchFactory('PushOff') );
+  $s.registerDevice('PushOn', createSwitchFactory('PushOn') );
   $s.registerDevice('Toggle', createSwitchFactory('Toggle') );
 
   // register logic gates
